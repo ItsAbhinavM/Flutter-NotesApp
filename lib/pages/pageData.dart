@@ -1,6 +1,6 @@
 class pageData {
-  final String _nameController;
-  final String _noteController;
+  final String nameController;
+  final String noteController;
 
-  pageData({required this._nameController, required this._noteController});
+  pageData({required this.nameController, required this.noteController});
 }
