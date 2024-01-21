@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:notetwo/pages/editPage.dart';
+import 'package:notetwo/pages/createPage.dart';
 import 'package:notetwo/pages/pageData.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,6 +16,15 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> _items = [];
   final _noteBox = Hive.box("Note_box");
 
+  Future<void> _deleteItem(int itemkey) async {
+    await _noteBox.delete(itemkey);
+    _refreshItems();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("An item has been deleted ")));
+  }
+
+  @override
   void initState() {
     super.initState();
     _refreshItems();
@@ -49,21 +58,37 @@ class _HomePageState extends State<HomePage> {
           itemCount: _items.length,
           itemBuilder: (_, index) {
             final currenIndex = _items[index];
-            return SizedBox(
-              height: 150,
-              child: Card(
-                color: Colors.blue.shade100,
-                margin: const EdgeInsets.only(left: 30, right: 5, top: 20),
-                elevation: 25,
-                child: ListTile(
-                  title: Text(currenIndex['name']),
-                  subtitle: Text(currenIndex['note']),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                          onPressed: null, icon: const Icon(Icons.delete))
-                    ],
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            //editPage(currenIndex['key'])._showForm(context, currenIndex['key'])));
+                            createPage(
+                              content: context,
+                              itemIndex: currenIndex['key'],
+                            )));
+              },
+              child: SizedBox(
+                height: 150,
+                child: Card(
+                  color: Colors.blue.shade100,
+                  margin: const EdgeInsets.only(left: 30, right: 5, top: 20),
+                  elevation: 25,
+                  child: ListTile(
+                    title: Text(currenIndex['name']),
+                    subtitle: Text(currenIndex['note']),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              _deleteItem(currenIndex['key']);
+                            },
+                            icon: const Icon(Icons.delete))
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -72,7 +97,10 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => editPage()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      createPage(content: context, itemIndex: 0)));
         },
         child: Icon(Icons.add),
       ),
