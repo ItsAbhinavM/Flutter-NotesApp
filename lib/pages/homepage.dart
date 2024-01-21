@@ -53,47 +53,49 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       extendBodyBehindAppBar: false,
       backgroundColor: Colors.black,
-      appBar: appBar(),
-      body: ListView.builder(
-          itemCount: _items.length,
-          itemBuilder: (_, index) {
-            final currenIndex = _items[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            //editPage(currenIndex['key'])._showForm(context, currenIndex['key'])));
-                            createPage(
-                              content: context,
-                              itemIndex: currenIndex['key'],
-                            )));
-              },
-              child: SizedBox(
-                height: 150,
-                child: Card(
-                  color: Colors.blue.shade100,
-                  margin: const EdgeInsets.only(left: 30, right: 5, top: 20),
-                  elevation: 25,
-                  child: ListTile(
-                    title: Text(currenIndex['name']),
-                    subtitle: Text(currenIndex['note']),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              _deleteItem(currenIndex['key']);
-                            },
-                            icon: const Icon(Icons.delete))
-                      ],
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxisScrolled) => [appBar()],
+        body: ListView.builder(
+            itemCount: _items.length,
+            itemBuilder: (_, index) {
+              final currenIndex = _items[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              //editPage(currenIndex['key'])._showForm(context, currenIndex['key'])));
+                              createPage(
+                                content: context,
+                                itemIndex: currenIndex['key'],
+                              )));
+                },
+                child: SizedBox(
+                  height: 150,
+                  child: Card(
+                    color: Colors.blue.shade100,
+                    margin: const EdgeInsets.only(left: 30, right: 5, top: 20),
+                    elevation: 25,
+                    child: ListTile(
+                      title: Text(currenIndex['name']),
+                      subtitle: Text(currenIndex['note']),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                _deleteItem(currenIndex['key']);
+                              },
+                              icon: const Icon(Icons.delete))
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -107,8 +109,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  AppBar appBar() {
-    return AppBar(
+  SliverAppBar appBar() {
+    return SliverAppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
       title: Text(
